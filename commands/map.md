@@ -1,5 +1,5 @@
 ---
-name: sc:init
+name: sc:map
 description: Deep codebase analysis — creates CLAUDE.md, CODEBASE_MAP.md, and team structure
 ---
 
@@ -10,15 +10,15 @@ Perform a deep analysis of the current project codebase. Create comprehensive do
 <enforcement>
 ## SESSION SETUP CHECK
 
-**If this is the FIRST /sc command in a new session, you MUST ask the 4 session setup questions BEFORE running init.**
+**If this is the FIRST /sc command in a new session, you MUST ask the 4 session setup questions BEFORE running map.**
 See SKILL.md for the 4 questions.
 
-## ALREADY INITIALIZED CHECK
+## ALREADY MAPPED CHECK
 
 Check if `.claude-team/initialized` exists. If yes, warn:
 ```
-Already initialized. To re-analyze: rm -rf .claude-team && rm CLAUDE.md
-Then run /sc:init again.
+Already mapped. To re-analyze: rm -rf .claude-team && rm CLAUDE.md
+Then run /sc:map again.
 ```
 </enforcement>
 
@@ -40,10 +40,12 @@ mkdir -p .claude-team/{sessions,history}
 The init action will:
 1. Count all files by type
 2. Explore the entire codebase thoroughly
-3. Create CLAUDE.md with project knowledge base + UI Component Map
-4. Create .claude-team/CODEBASE_MAP.md with detailed file/function/UI index
-5. Create .claude-team/SYSTEM_PROMPT.md with task workflow rules
-6. Mark as initialized
+3. Detect external references (files outside this project)
+4. Analyze external folders automatically
+5. Create CLAUDE.md with project knowledge base + UI Component Map + External Dependencies
+6. Create .claude-team/CODEBASE_MAP.md with detailed file/function/UI/external index
+7. Create .claude-team/SYSTEM_PROMPT.md with task workflow rules
+8. Mark as initialized
 </step>
 
 <step name="finalize">
@@ -56,7 +58,7 @@ echo '{"date":"'$(date +%Y-%m-%d)'","member":"system","task":"Deep codebase anal
 
 Report:
 ```
-Codebase analyzed!
+Codebase mapped!
 
 Created:
   CLAUDE.md                       — Project knowledge base

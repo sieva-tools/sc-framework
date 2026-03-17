@@ -20,7 +20,7 @@ Display:
 SC (SievaTeam-Claude) v1.0 — Help
 
 SETUP:
-  /sc:init                    Deep codebase analysis (run once per project)
+  /sc:map                    Deep codebase analysis (run once per project)
 
 TASK MANAGEMENT:
   /sc:add <task>              Capture task with questions + planning
@@ -35,7 +35,7 @@ UTILITIES:
   /sc:help                    Show this help
 
 WORKFLOW:
-  1. /sc:init      → Analyze codebase (once)
+  1. /sc:map      → Analyze codebase (once)
   2. /sc:add task   → Capture + plan (repeatable)
   3. /sc:work       → Implement + test (processes queue)
 

@@ -107,7 +107,7 @@ If user wants to modify: Let them edit requirements, regenerate plan.
 After approval, create REQ files for each task:
 
 ```bash
-mkdir -p pp pp/rephrased pp/plans
+mkdir -p pp/$USER pp/$USER/rephrased pp/$USER/plans
 ```
 
 For each task in the PRD:

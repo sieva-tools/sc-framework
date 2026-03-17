@@ -2,6 +2,18 @@
 
 > **Part of the SC skill.** Processes pending requests with codebase-aware implementation, auto-research, team features, and automated Playwright testing with fix loops.
 
+## CRITICAL: Per-User Workspaces
+
+**All task files are per-user.** Determine the current user at the start:
+```bash
+echo $USER
+```
+Use `pp/$USER/` for ALL task paths (e.g., `pp/durga/REQ-001.md`, `pp/durga/working/`).
+**NEVER read or write another user's pp/ folder.**
+**SHARED files** (CLAUDE.md, CODEBASE_MAP.md, history/tasks.jsonl) are read/written by all users.
+
+---
+
 ## CRITICAL: Orchestrator Responsibilities
 
 The work action is an **orchestrator**. You (the orchestrator) are responsible for ALL file management, folder operations, and team features. Spawned agents do implementation work but do NOT touch request files, folder structure, or test generation.
@@ -37,7 +49,7 @@ The work action is an **orchestrator**. You (the orchestrator) are responsible f
 **IMPORTANT: You MUST create these folders if they don't exist.**
 
 ```bash
-mkdir -p pp/config pp/research pp/working pp/archive pp/rephrased pp/plans
+mkdir -p pp/$USER/{config,research,working,archive,rephrased,plans}
 mkdir -p .claude-team/{sessions,history}
 mkdir -p tests/pp tests/pp/screenshots
 ```
@@ -68,7 +80,7 @@ Use AskUserQuestion to confirm.
 ### Check 4: Test Environment (if Playwright enabled)
 
 ```bash
-cat pp/config/test-env.json 2>/dev/null
+cat pp/$USER/config/test-env.json 2>/dev/null
 ```
 
 If missing AND Playwright enabled: STOP and ask for credentials.
@@ -76,7 +88,7 @@ If missing AND Playwright enabled: STOP and ask for credentials.
 ### Check 5: Pending Requests
 
 ```bash
-ls pp/REQ-*.md 2>/dev/null
+ls pp/$USER/REQ-*.md 2>/dev/null
 ```
 
 If no REQ files: "Queue empty. Use `/sc add <task>` to capture tasks."
@@ -90,7 +102,7 @@ If no REQ files: "Queue empty. Use `/sc add <task>` to capture tasks."
 **[Orchestrator action]**
 
 ```bash
-ls pp/REQ-*.md 2>/dev/null | head -1
+ls pp/$USER/REQ-*.md 2>/dev/null | head -1
 ```
 
 Pick the first REQ file (sorted by number). If empty, exit.
@@ -101,8 +113,8 @@ Pick the first REQ file (sorted by number). If empty, exit.
 
 1. **Move request file:**
 ```bash
-mkdir -p pp/working
-mv pp/REQ-XXX-slug.md pp/working/
+mkdir -p pp/$USER/working
+mv pp/$USER/REQ-XXX-slug.md pp/$USER/working/
 ```
 
 2. **Update frontmatter:**
@@ -169,7 +181,7 @@ Read the task content and determine if research is needed.
 
 **If `needs_research: true`:**
 
-1. Create research file at `pp/research/REQ-XXX-RESEARCH.md`:
+1. Create research file at `pp/$USER/research/REQ-XXX-RESEARCH.md`:
 ```markdown
 # Research: REQ-XXX [Title]
 
@@ -229,7 +241,7 @@ Update STATE.md: `Step: explored`
 
 Load the existing plan:
 ```bash
-cat pp/plans/REQ-XXX-plan.md
+cat pp/$USER/plans/REQ-XXX-plan.md
 ```
 
 Append plan summary to request file.
@@ -283,7 +295,7 @@ mkdir -p tests/pp tests/pp/screenshots
 
 Read test config:
 ```bash
-cat pp/config/test-env.json
+cat pp/$USER/config/test-env.json
 ```
 
 **Create test file** at `tests/pp/REQ-XXX-slug.spec.js`:
@@ -408,7 +420,7 @@ Update STATE.md after each iteration.
 
 **SKIP if Playwright testing disabled.**
 
-Create `pp/working/REQ-XXX-VERIFICATION.md`:
+Create `pp/$USER/working/REQ-XXX-VERIFICATION.md`:
 ```markdown
 # Verification Report: REQ-XXX [Title]
 
@@ -449,8 +461,8 @@ tests_total: Z
 
 2. Move files to archive:
 ```bash
-mkdir -p pp/archive
-mv pp/working/REQ-XXX-*.md pp/archive/
+mkdir -p pp/$USER/archive
+mv pp/$USER/working/REQ-XXX-*.md pp/$USER/archive/
 ```
 
 3. Update STATE.md:
@@ -478,7 +490,7 @@ git add -A
 git commit -m "$(cat <<'EOF'
 [REQ-XXX] Title
 
-Implements: pp/archive/REQ-XXX-slug.md
+Implements: pp/$USER/archive/REQ-XXX-slug.md
 Tests: tests/pp/REQ-XXX-slug.spec.js
 
 - [implementation summary bullets]
@@ -535,7 +547,7 @@ rm -f ".claude-team/sessions/$$.lock"
 ### Step 16: Loop or Exit
 
 ```bash
-ls pp/REQ-*.md 2>/dev/null
+ls pp/$USER/REQ-*.md 2>/dev/null
 ```
 
 - More REQs → Start Step 1 again
@@ -546,22 +558,23 @@ ls pp/REQ-*.md 2>/dev/null
 ## Orchestrator Checklist (per request)
 
 ```
-□ Pre-flight: Create all folders
+□ Pre-flight: echo $USER to determine user
+□ Pre-flight: Create all folders under pp/$USER/
 □ Pre-flight: Check session locks
 □ Pre-flight: Check test-env.json (if Playwright enabled)
-□ Step 1: ls pp/REQ-*.md, pick first one
-□ Step 2: mv REQ to pp/working/, create session lock
+□ Step 1: ls pp/$USER/REQ-*.md, pick first one
+□ Step 2: mv REQ to pp/$USER/working/, create session lock
 □ Step 3: Load codebase context (CLAUDE.md, CODEBASE_MAP.md)
 □ Step 4: Analyze for research needs, append ## Analysis
 □ Step 5: (if needed) Create RESEARCH.md
 □ Step 6: Spawn Explore agent, append ## Exploration
-□ Step 7: Load plan from pp/plans/REQ-XXX-plan.md
+□ Step 7: Load plan from pp/$USER/plans/REQ-XXX-plan.md
 □ Step 8: Spawn implementation agent, append ## Implementation Summary
 □ Step 9: (if Playwright) Create tests/pp/REQ-XXX.spec.js
 □ Step 10: (if Playwright) Run test loop — ZERO TOLERANCE
 □ Step 10b: (if Playwright) Screenshot review — fix ALL UI issues
 □ Step 11: (if Playwright) Create VERIFICATION.md
-□ Step 12: Update frontmatter: status: completed, mv to archive
+□ Step 12: Update frontmatter: status: completed, mv to pp/$USER/archive
 □ Step 13: (if auto-commit) git commit
 □ Step 14: Auto-update CLAUDE.md + CODEBASE_MAP.md (if tests passed)
 □ Step 15: Log to tasks.jsonl, remove session lock

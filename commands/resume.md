@@ -13,7 +13,7 @@ Resume SC work from the last saved position in STATE.md. Restores full context i
 ## Check State
 
 ```bash
-cat pp/STATE.md 2>/dev/null || echo "NO_STATE"
+cat pp/$USER/STATE.md 2>/dev/null || echo "NO_STATE"
 ```
 
 If no STATE.md:

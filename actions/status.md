@@ -7,9 +7,10 @@
 Read all relevant state files:
 
 ```bash
-cat pp/STATE.md 2>/dev/null || echo "NO_STATE"
-ls pp/REQ-*.md 2>/dev/null || echo "NO_REQUESTS"
-ls pp/working/REQ-*.md 2>/dev/null || echo "NO_WORKING"
+echo $USER
+cat pp/$USER/STATE.md 2>/dev/null || echo "NO_STATE"
+ls pp/$USER/REQ-*.md 2>/dev/null || echo "NO_REQUESTS"
+ls pp/$USER/working/REQ-*.md 2>/dev/null || echo "NO_WORKING"
 ls .claude-team/sessions/*.lock 2>/dev/null || echo "NO_LOCKS"
 cat .claude-team/initialized 2>/dev/null || echo "NOT_INITIALIZED"
 ```

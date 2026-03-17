@@ -1,7 +1,7 @@
 ---
 name: sc
 description: SievaTeam-Claude — Team task queue with codebase analysis, smart questioning, auto-research, batch/PRD mode, and Playwright testing
-argument-hint: init | add <task> | work | batch | status | resume | update | help | mode
+argument-hint: map | add <task> | work | batch | status | resume | update | help | mode
 ---
 
 # SC (SievaTeam-Claude) Skill
@@ -16,11 +16,11 @@ A team-oriented task management system that combines deep codebase understanding
 
 ### `/sc add <task>` — Capture ONLY
 - Rephrase prompt into optimized detailed version (using agent)
-- Save rephrased prompt to `pp/rephrased/`
+- Save rephrased prompt to `pp/$USER/rephrased/`
 - Ask clarifying questions (ALWAYS — both Normal and Overnight modes)
 - Match vague terms to UI Element Index from CODEBASE_MAP.md
 - Enter plan mode for medium/complex tasks
-- Save plan to `pp/plans/`
+- Save plan to `pp/$USER/plans/`
 - Create REQ file(s) with references to rephrased prompt and plan
 - **NEVER write code**
 - **NEVER implement anything**
@@ -29,7 +29,7 @@ A team-oriented task management system that combines deep codebase understanding
 ### `/sc work` — Implementation ONLY
 - Follow the workflow in [work action](./actions/work.md) step by step
 - Check session locks (team feature)
-- Move files through: `pp/` → `pp/working/` → `pp/archive/`
+- Move files through: `pp/$USER/` → `pp/$USER/working/` → `pp/$USER/archive/`
 - Generate tests, run test loop, create verification
 - Log to `.claude-team/history/tasks.jsonl`
 
@@ -49,9 +49,10 @@ A team-oriented task management system that combines deep codebase understanding
 - Skip archiving completed work
 
 **ALWAYS:**
-- Run `mkdir -p pp/{config,research,working,archive,rephrased,plans} .claude-team/{sessions,history} tests/pp tests/pp/screenshots` first
-- Move REQ file to `pp/working/` before implementation
-- Update STATE.md at each step
+- Determine current user: `$USER` (e.g., durga, john)
+- Run `mkdir -p pp/$USER/{config,research,working,archive,rephrased,plans} .claude-team/{sessions,history} tests/pp tests/pp/screenshots` first
+- Move REQ file to `pp/$USER/working/` before implementation
+- Update `pp/$USER/STATE.md` at each step
 - Generate Playwright tests yourself (not via agents)
 - Run the test loop until pass/skip
 - Move completed work to `pp/archive/`
@@ -164,7 +165,7 @@ To switch mode mid-session: `/sc mode normal` or `/sc mode overnight`
 
 | Command | Action | Description |
 |---------|--------|-------------|
-| `/sc init` | init | Deep codebase analysis → CLAUDE.md + CODEBASE_MAP.md |
+| `/sc map` | map | Deep codebase analysis → CLAUDE.md + CODEBASE_MAP.md |
 | `/sc help` | help | Show help documentation with all commands |
 | `/sc add <description>` | capture | Capture a new task with smart questioning |
 | `/sc work` | work | Process all pending tasks in the queue |
@@ -185,7 +186,7 @@ Examine what follows `/sc`:
 | Pattern | Example | Route |
 |---------|---------|-------|
 | Empty or `status` | `/sc` or `/sc status` | → status |
-| `init` | `/sc init` | → init (deep codebase analysis) |
+| `map` | `/sc map` | → map (deep codebase analysis) |
 | `help` | `/sc help` | → help |
 | `add <text>` | `/sc add make it faster` | → capture (with text as input) |
 | `work` | `/sc work` | → work (process queue) |
@@ -248,7 +249,7 @@ When routing to an action, READ THE FULL ACTION FILE before doing anything:
 
 | Command | Action File to READ |
 |---------|---------------------|
-| `/sc init` | **READ [init action](./actions/init.md) FIRST** |
+| `/sc map` | **READ [init action](./actions/init.md) FIRST** |
 | `/sc add` | **READ [capture action](./actions/capture.md) FIRST** |
 | `/sc work` | **READ [work action](./actions/work.md) FIRST** |
 | `/sc batch` | **READ [batch action](./actions/batch.md) FIRST** |
@@ -262,47 +263,57 @@ When routing to an action, READ THE FULL ACTION FILE before doing anything:
 
 ## Folder Structure
 
-### Team State (in project root)
+### SHARED (everyone reads, /sc:map creates)
 ```
-.claude-team/
-├── sessions/                    # Session locks (team)
-├── history/
-│   └── tasks.jsonl             # Task history log
+CLAUDE.md                        # Project knowledge base (SHARED)
+.claude-team/                    # Team state (SHARED)
 ├── CODEBASE_MAP.md             # Detailed file/function/UI index
 ├── SYSTEM_PROMPT.md            # Task workflow rules
-└── initialized                  # Marker file (from /sc init)
+├── initialized                  # Marker file (from /sc:map)
+├── sessions/                    # Session locks (team)
+└── history/
+    └── tasks.jsonl             # Task history log (all users)
 ```
 
-### Task Queue (in project root)
+### PER-USER (each user gets their own workspace under pp/$USER/)
 ```
 pp/
-├── REQ-001-task.md             # Pending queue
-├── STATE.md                    # Current state, decisions, blockers
-├── config/
-│   └── test-env.json           # Test credentials (gitignored)
-├── rephrased/                  # Optimized prompts
-│   └── REQ-001-rephrased.md
-├── plans/                      # Implementation plans
-│   └── REQ-001-plan.md
-├── research/
-│   └── REQ-001-RESEARCH.md     # Auto-generated research docs
-├── user-requests/               # Verbatim input preservation
-│   └── UR-001/
-│       ├── input.md
-│       └── assets/
-├── working/                     # In progress
-└── archive/                     # Completed work
-    └── UR-001/
-        ├── input.md
-        ├── REQ-001-task.md
-        └── VERIFICATION.md
+├── durga/                       # durga's workspace
+│   ├── REQ-001-task.md         # durga's pending queue
+│   ├── STATE.md                # durga's current state
+│   ├── config/
+│   │   └── test-env.json       # durga's test credentials (gitignored)
+│   ├── rephrased/              # durga's optimized prompts
+│   ├── plans/                  # durga's implementation plans
+│   ├── research/               # durga's auto-research docs
+│   ├── user-requests/          # durga's verbatim input
+│   ├── working/                # durga's in-progress tasks
+│   └── archive/                # durga's completed work
+│
+├── john/                        # john's workspace (separate)
+│   ├── REQ-001-task.md         # john's own queue (independent)
+│   ├── STATE.md                # john's own state
+│   ├── working/
+│   └── archive/
+│
+└── ...                          # more users as needed
 
 tests/
-└── pp/                          # Generated Playwright tests
+└── pp/                          # Playwright tests (shared — committed to git)
     ├── REQ-001-task.spec.js
     └── screenshots/
         └── REQ-001/
 ```
+
+### CRITICAL: User Isolation Rules
+- **`pp/$USER/`** — each user ONLY reads/writes their own folder
+- **`$USER`** is determined by the system `$USER` environment variable
+- **REQ numbering** is per-user (durga's REQ-001 ≠ john's REQ-001)
+- **STATE.md** is per-user — each user tracks their own progress
+- **config/test-env.json** is per-user — different credentials allowed
+- **CLAUDE.md + CODEBASE_MAP.md** are SHARED — everyone reads, auto-update writes
+- **history/tasks.jsonl** is SHARED — all users' completions logged here
+- **Session locks** are SHARED — so users can see who else is working
 
 ---
 

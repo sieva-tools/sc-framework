@@ -11,7 +11,7 @@ Team task management with codebase analysis, smart capture, and automated testin
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 SETUP
-  /sc:init                     Deep codebase analysis (run once per project)
+  /sc:map                     Deep codebase analysis (run once per project)
                                Creates CLAUDE.md + CODEBASE_MAP.md
                                Enables intelligent UI element matching
 
@@ -39,7 +39,7 @@ UTILITIES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 WORKFLOW
-  Step 1: /sc:init              Analyze codebase (once per project)
+  Step 1: /sc:map              Analyze codebase (once per project)
   Step 2: /sc:add <task>        Capture + question + plan (repeatable)
   Step 3: /sc:work              Implement + test + archive (processes queue)
 

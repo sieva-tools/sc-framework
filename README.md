@@ -59,7 +59,7 @@ ls -la ~/.claude/commands/sc
 
 Navigate to your project folder in Claude Code, then:
 ```
-/sc:init
+/sc:map
 ```
 
 This runs **once per project**. SC will:
@@ -145,7 +145,7 @@ Queue empty. Done!
 
 | Command | What it does |
 |---------|-------------|
-| `/sc:init` | Analyze codebase, create knowledge base (once per project) |
+| `/sc:map` | Analyze codebase, create knowledge base (once per project) |
 | `/sc:add <task>` | Capture a task with questions + planning (no coding) |
 | `/sc:work` | Process all pending tasks in queue |
 | `/sc:batch` | Enter multiple tasks, get PRD with dependency analysis |
@@ -322,44 +322,44 @@ After setup, your project will have:
 
 ```
 your-project/
-├── CLAUDE.md                        ← Project knowledge base (created by /sc:init)
-├── .claude-team/                    ← Team state
-│   ├── CODEBASE_MAP.md             ← File/function/UI index
-│   ├── SYSTEM_PROMPT.md            ← Task workflow rules
-│   ├── initialized                  ← Marker file
-│   ├── sessions/                    ← Session locks (team)
-│   │   └── 12345.lock
+├── CLAUDE.md                            ← SHARED: Project knowledge base
+├── .claude-team/                        ← SHARED: Team state
+│   ├── CODEBASE_MAP.md                 ← File/function/UI index
+│   ├── SYSTEM_PROMPT.md                ← Task workflow rules
+│   ├── initialized                      ← Marker file
+│   ├── sessions/                        ← Session locks
 │   └── history/
-│       └── tasks.jsonl             ← Task history
-├── pp/                              ← Task queue
-│   ├── REQ-001-fix-search.md       ← Pending task
-│   ├── STATE.md                    ← Current progress
-│   ├── config/
-│   │   └── test-env.json           ← Test credentials (gitignored)
-│   ├── rephrased/                  ← Optimized prompts
-│   │   └── REQ-001-rephrased.md
-│   ├── plans/                      ← Implementation plans
-│   │   └── REQ-001-plan.md
-│   ├── research/                   ← Auto-research docs
-│   ├── working/                    ← Currently in progress
-│   └── archive/                    ← Completed tasks
-│       ├── REQ-001-fix-search.md
-│       └── REQ-001-VERIFICATION.md
+│       └── tasks.jsonl                 ← All users' task history
+│
+├── pp/                                  ← PER-USER workspaces
+│   ├── durga/                           ← durga's workspace
+│   │   ├── REQ-001-fix-search.md       ← durga's pending task
+│   │   ├── STATE.md                    ← durga's progress
+│   │   ├── config/test-env.json        ← durga's test credentials
+│   │   ├── rephrased/                  ← durga's optimized prompts
+│   │   ├── plans/                      ← durga's implementation plans
+│   │   ├── research/                   ← durga's auto-research
+│   │   ├── working/                    ← durga's in-progress
+│   │   └── archive/                    ← durga's completed tasks
+│   │
+│   └── john/                            ← john's workspace (independent)
+│       ├── REQ-001-add-feature.md      ← john's own queue
+│       ├── STATE.md                    ← john's own state
+│       └── ...
+│
 └── tests/
-    └── pp/                          ← Playwright tests
+    └── pp/                              ← Playwright tests (shared)
         ├── REQ-001-fix-search.spec.js
         └── screenshots/
-            └── REQ-001/
-                ├── ui-initial-fullpage.png
-                ├── ui-mobile.png
-                └── ui-tablet.png
 ```
+
+Each user's work is isolated — no conflicts when multiple people work simultaneously.
 
 ### What to Gitignore
 
 Add to your `.gitignore`:
 ```
-pp/config/test-env.json
+pp/*/config/test-env.json
 .claude-team/sessions/
 ```
 
@@ -417,7 +417,7 @@ ln -sf ~/.claude/skills/sc/commands ~/.claude/commands/sc
 
 ### "Not initialized" error
 ```
-/sc:init
+/sc:map
 ```
 Run this in your project folder first.
 
@@ -426,7 +426,7 @@ Run this in your project folder first.
 rm -rf .claude-team
 rm CLAUDE.md
 ```
-Then run `/sc:init` again.
+Then run `/sc:map` again.
 
 ### Stuck mid-task
 ```
@@ -437,9 +437,9 @@ Or check state:
 /sc:status
 ```
 
-### Want to clear the queue
+### Want to clear your queue
 ```bash
-rm pp/REQ-*.md
+rm pp/$USER/REQ-*.md
 ```
 
 ### Context reset during work
@@ -450,7 +450,7 @@ Just run `/sc:resume` — it picks up from STATE.md.
 ## Quick Reference Card
 
 ```
-SETUP:    /sc:init                  (once per project)
+SETUP:    /sc:map                  (once per project)
 CAPTURE:  /sc:add <task>            (think + plan, no code)
 WORK:     /sc:work                  (implement + test)
 BATCH:    /sc:batch                 (multi-task PRD)

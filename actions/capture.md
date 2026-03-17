@@ -19,11 +19,13 @@
 - Ask clarifying questions
 - Match vague terms to UI Element Index
 - Enter plan mode and create a plan
-- Create `pp/REQ-*.md` files
-- Create `pp/rephrased/` and `pp/plans/` files
-- Create `pp/user-requests/UR-*/` folders
+- Create `pp/$USER/REQ-*.md` files
+- Create `pp/$USER/rephrased/` and `pp/$USER/plans/` files
+- Create `pp/$USER/user-requests/UR-*/` folders
 - Set up test config (if first time)
-- Update `pp/STATE.md`
+- Update `pp/$USER/STATE.md`
+
+**CRITICAL: All pp/ paths are per-user. Always use `pp/$USER/` (e.g., `pp/durga/`). Never write to another user's folder.**
 
 **After capture is complete, tell the user:**
 ```
@@ -41,7 +43,7 @@ Ready to implement? Run `/sc work`
 **Before capturing ANY task, complete this checklist in order:**
 
 - [ ] **Step 0:** Load codebase context (CLAUDE.md + CODEBASE_MAP.md)
-- [ ] **Step 0b:** If Playwright testing enabled AND `pp/config/test-env.json` doesn't exist → Ask for test credentials FIRST
+- [ ] **Step 0b:** If Playwright testing enabled AND `pp/$USER/config/test-env.json` doesn't exist → Ask for test credentials FIRST
 - [ ] **Step 1:** Rephrase the user's prompt into an optimized, detailed prompt using an agent
 - [ ] **Step 2:** Show rephrased prompt to user and save to `pp/rephrased/`
 - [ ] **Step 3:** Ask clarifying questions (ALWAYS — both Normal and Overnight modes)
@@ -75,10 +77,10 @@ Even detailed/long requests (500+ words) still need questions about:
 
 **If user selected "No" for Playwright testing:** Skip this section entirely.
 
-**If Playwright testing is enabled**, check if `pp/config/test-env.json` exists:
+**If Playwright testing is enabled**, check if `pp/$USER/config/test-env.json` exists:
 
 ```bash
-cat pp/config/test-env.json 2>/dev/null
+cat pp/$USER/config/test-env.json 2>/dev/null
 ```
 
 ### If Config EXISTS → Use It
@@ -103,10 +105,10 @@ options:
 
 **Create config file:**
 ```bash
-mkdir -p pp/config
+mkdir -p pp/$USER/config
 ```
 
-Write `pp/config/test-env.json`:
+Write `pp/$USER/config/test-env.json`:
 ```json
 {
   "loginUrl": "https://example.com/login",
@@ -119,7 +121,7 @@ Write `pp/config/test-env.json`:
 
 **Add to .gitignore:**
 ```bash
-echo "pp/config/test-env.json" >> .gitignore
+echo "pp/$USER/config/test-env.json" >> .gitignore
 ```
 
 ---
@@ -156,7 +158,7 @@ If not initialized, proceed without context and note: "Run `/sc:init` for better
 
 1. **Create rephrased folder:**
 ```bash
-mkdir -p pp/rephrased
+mkdir -p pp/$USER/rephrased
 ```
 
 2. **Spawn a general-purpose agent** to rephrase:
@@ -188,7 +190,7 @@ Rephrase into a detailed, actionable prompt that:
 ", subagent_type="general-purpose")
 ```
 
-3. **Save the rephrased prompt** to `pp/rephrased/REQ-XXX-rephrased.md`:
+3. **Save the rephrased prompt** to `pp/$USER/rephrased/REQ-XXX-rephrased.md`:
 
 ```markdown
 ---
@@ -255,7 +257,7 @@ Read the rephrased prompt. Before doing anything:
 
 Check for duplicates:
 ```bash
-ls pp/REQ-*.md pp/working/REQ-*.md pp/archive/REQ-*.md 2>/dev/null
+ls pp/$USER/REQ-*.md pp/$USER/working/REQ-*.md pp/$USER/archive/REQ-*.md 2>/dev/null
 ```
 
 | Location | Action |
@@ -280,7 +282,7 @@ ls pp/REQ-*.md pp/working/REQ-*.md pp/archive/REQ-*.md 2>/dev/null
 
 1. Create plans folder:
 ```bash
-mkdir -p pp/plans
+mkdir -p pp/$USER/plans
 ```
 
 2. Enter plan mode using EnterPlanMode. In plan mode:
@@ -290,7 +292,7 @@ mkdir -p pp/plans
    - Identify files to create/modify
    - Consider edge cases
 
-3. Save the plan to `pp/plans/REQ-XXX-plan.md`:
+3. Save the plan to `pp/$USER/plans/REQ-XXX-plan.md`:
 
 ```markdown
 ---
@@ -332,12 +334,12 @@ estimated_complexity: simple | moderate | complex
 
 **Create folder structure:**
 ```bash
-mkdir -p pp pp/user-requests
+mkdir -p pp/$USER pp/$USER/user-requests
 ```
 
 **Determine next REQ number:**
 ```bash
-ls pp/REQ-*.md pp/working/REQ-*.md pp/archive/REQ-*.md 2>/dev/null | wc -l
+ls pp/$USER/REQ-*.md pp/$USER/working/REQ-*.md pp/$USER/archive/REQ-*.md 2>/dev/null | wc -l
 ```
 Next number = count + 1.
 
@@ -351,8 +353,8 @@ title: Brief descriptive title
 status: pending
 created_at: 2026-03-17T10:00:00Z
 user_request: UR-001
-rephrased_prompt: pp/rephrased/REQ-001-rephrased.md
-plan: pp/plans/REQ-001-plan.md
+rephrased_prompt: pp/$USER/rephrased/REQ-001-rephrased.md
+plan: pp/$USER/plans/REQ-001-plan.md
 test_url: https://example.com/dashboard
 ---
 
@@ -375,10 +377,10 @@ test_url: https://example.com/dashboard
 - [Element name] in [file:line]
 
 ## Rephrased Prompt
-See [pp/rephrased/REQ-001-rephrased.md]
+See [pp/$USER/rephrased/REQ-001-rephrased.md]
 
 ## Implementation Plan
-See [pp/plans/REQ-001-plan.md]
+See [pp/$USER/plans/REQ-001-plan.md]
 
 ---
 *Captured after [N] clarifying questions*
@@ -390,7 +392,7 @@ See [pp/plans/REQ-001-plan.md]
 
 ### Step 8: Update STATE.md and Report
 
-Update `pp/STATE.md`:
+Update `pp/$USER/STATE.md`:
 ```markdown
 ## Current Position
 
@@ -407,8 +409,8 @@ Report:
 Captured: [task summary]
 
 - UI Elements: [matched from codebase]
-- Rephrased: pp/rephrased/REQ-XXX-rephrased.md
-- Plan: pp/plans/REQ-XXX-plan.md
+- Rephrased: pp/$USER/rephrased/REQ-XXX-rephrased.md
+- Plan: pp/$USER/plans/REQ-XXX-plan.md
 - Created: REQ-XXX-slug.md
 
 Ready to implement? Run `/sc work`
