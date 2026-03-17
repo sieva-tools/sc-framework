@@ -489,7 +489,36 @@ EOF
 )"
 ```
 
-### Step 14: Log and Clean Up
+### Step 14: Auto-Update Codebase Memory
+
+**[Orchestrator action]**
+
+**After successful completion (all tests passed or Playwright disabled), auto-update the codebase knowledge base.**
+
+If CLAUDE.md and .claude-team/CODEBASE_MAP.md exist:
+
+1. Read the implementation summary from the archived REQ file
+2. Identify which files were created/modified/deleted
+3. For each changed file:
+   - Read the file
+   - Update CLAUDE.md — add new endpoints, UI elements, patterns
+   - Update .claude-team/CODEBASE_MAP.md — add to File Index, UI Element Index, Component Map
+4. Only ADD/UPDATE entries for changed files — do not rewrite the entire docs
+
+```
+Updating codebase memory...
+  Added: [new files to index]
+  Updated: [modified file entries]
+  [done]
+```
+
+**SKIP if:**
+- CLAUDE.md doesn't exist (project not initialized with /sc:init)
+- Verification status is FAIL (tests didn't pass)
+
+Update STATE.md: `Step: memory_updated`
+
+### Step 15: Log and Clean Up
 
 **[Orchestrator action]**
 
@@ -503,7 +532,7 @@ echo '{"date":"'$(date +%Y-%m-%d)'","member":"'$USER'","task":"[title]","type":"
 rm -f ".claude-team/sessions/$$.lock"
 ```
 
-### Step 15: Loop or Exit
+### Step 16: Loop or Exit
 
 ```bash
 ls pp/REQ-*.md 2>/dev/null
@@ -534,8 +563,9 @@ ls pp/REQ-*.md 2>/dev/null
 □ Step 11: (if Playwright) Create VERIFICATION.md
 □ Step 12: Update frontmatter: status: completed, mv to archive
 □ Step 13: (if auto-commit) git commit
-□ Step 14: Log to tasks.jsonl, remove session lock
-□ Step 15: Loop or exit
+□ Step 14: Auto-update CLAUDE.md + CODEBASE_MAP.md (if tests passed)
+□ Step 15: Log to tasks.jsonl, remove session lock
+□ Step 16: Loop or exit
 ```
 
 ---
@@ -562,6 +592,7 @@ Processing REQ-013-logout-button.md...
   Verification...          [done]
   Archiving...             [done]
   Committing...            [done] → abc1234
+  Updating memory...       [done] → 2 files added to index
   Logging...               [done] → tasks.jsonl
 
 All tests passed. 1 UI issue found and fixed.
