@@ -525,7 +525,7 @@ Updating codebase memory...
 ```
 
 **SKIP if:**
-- CLAUDE.md doesn't exist (project not initialized with /sc:init)
+- CLAUDE.md doesn't exist (project not mapped with /sc:map)
 - Verification status is FAIL (tests didn't pass)
 
 Update STATE.md: `Step: memory_updated`

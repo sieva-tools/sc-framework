@@ -216,6 +216,39 @@ For each external folder referenced by this codebase:
 depends on external files, read them first to understand the interface. Do NOT modify
 external files unless explicitly asked — they may be shared with other projects.
 
+## Workflows & Conventions
+Detect and document how this project operates:
+
+### Deployment
+- How is code deployed? (FTP, git push, CI/CD, rsync, Docker, etc.)
+- Look for: Dockerfile, docker-compose.yml, .github/workflows/, .gitlab-ci.yml, Jenkinsfile, deploy.sh, Makefile, Procfile, vercel.json, netlify.toml
+- Dev/staging/prod environments?
+
+### Git Conventions
+- Branching strategy (if .git exists — check branches)
+- Commit message patterns (check recent commits)
+- PR/merge workflow?
+
+### Build & Run
+- How to start the app locally? (npm start, php -S, docker-compose up, etc.)
+- Build steps? (npm run build, composer install, etc.)
+- Look for: package.json scripts, Makefile, composer.json scripts
+
+### Testing
+- Existing test framework? (PHPUnit, Jest, Playwright, pytest, etc.)
+- Look for: tests/, __tests__/, *.test.*, *.spec.*, phpunit.xml, jest.config.*
+- How to run tests?
+
+### Environment
+- Config files (.env, .env.example, config.php, settings.py)
+- Required environment variables
+- Third-party services (Redis, Elasticsearch, S3, etc.)
+
+### Coding Standards
+- Linter config? (.eslintrc, .prettierrc, phpcs.xml, .editorconfig)
+- Naming conventions observed in codebase
+- File organization patterns
+
 ## Gotchas and Issues
 - Deprecated code patterns found
 - Security concerns noticed
