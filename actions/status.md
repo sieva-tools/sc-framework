@@ -30,7 +30,7 @@ sc Status (v1.0)
 Codebase: Not initialized
 No pending tasks.
 
-Run /sc:init to analyze your codebase first.
+Run /sc:map to analyze your codebase first.
 Then /sc:add <task> to capture a task.
 ```
 

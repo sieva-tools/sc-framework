@@ -8,7 +8,7 @@
 cat .claude-team/initialized 2>/dev/null || echo "NOT_INITIALIZED"
 ```
 
-If not initialized: "Not initialized. Run `/sc:init` first."
+If not initialized: "Not initialized. Run `/sc:map` first."
 
 ---
 
