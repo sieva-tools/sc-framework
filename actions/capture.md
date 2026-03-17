@@ -150,7 +150,11 @@ If both exist:
 - "the table" → identify which table from Component to File Map
 - "that button" → find in Buttons and Actions section
 
-If not initialized, proceed without context and note: "Run `/sc:init` for better results."
+If not initialized (files don't exist):
+- **Ask the user:** "Your codebase hasn't been mapped yet. Run `/sc:map` first? This helps SC understand your project structure, files, and UI components for better task planning."
+- Options: "Yes, run /sc:map first (Recommended)" / "No, continue without context"
+- If user chooses Yes → stop capture and tell them to run `/sc:map`
+- If user chooses No → proceed without context (reduced accuracy)
 
 ---
 
