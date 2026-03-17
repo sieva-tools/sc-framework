@@ -31,6 +31,7 @@ TASK MANAGEMENT:
 
 UTILITIES:
   /sc:update                  Refresh codebase memory after changes
+  /sc:upgrade                 Update SC framework to latest version
   /sc:mode <normal|overnight> Switch session mode
   /sc:help                    Show this help
 

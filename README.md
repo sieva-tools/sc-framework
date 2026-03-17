@@ -154,6 +154,7 @@ Queue empty. Done!
 | `/sc:update` | Refresh codebase memory after big changes |
 | `/sc:mode normal` | Switch to interactive mode |
 | `/sc:mode overnight` | Switch to autonomous mode |
+| `/sc:upgrade` | Update SC framework to latest version |
 | `/sc:help` | Show help |
 
 ---
@@ -457,6 +458,7 @@ BATCH:    /sc:batch                 (multi-task PRD)
 STATUS:   /sc:status                (see queue)
 RESUME:   /sc:resume                (continue after reset)
 UPDATE:   /sc:update                (refresh codebase memory)
+UPGRADE:  /sc:upgrade               (update SC framework)
 MODE:     /sc:mode normal|overnight (switch mode)
 HELP:     /sc:help                  (show commands)
 ```

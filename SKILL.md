@@ -1,7 +1,7 @@
 ---
 name: sc
 description: SievaTeam-Claude — Team task queue with codebase analysis, smart questioning, auto-research, batch/PRD mode, and Playwright testing
-argument-hint: map | add <task> | work | batch | status | resume | update | help | mode
+argument-hint: map | add <task> | work | batch | status | resume | update | upgrade | help | mode
 ---
 
 # SC (SievaTeam-Claude) Skill
@@ -174,6 +174,7 @@ To switch mode mid-session: `/sc mode normal` or `/sc mode overnight`
 | `/sc status` | status | Show current state and pending work |
 | `/sc update` | update | Refresh codebase memory after changes |
 | `/sc mode <normal\|overnight>` | mode | Switch session mode |
+| `/sc upgrade` | upgrade | Update SC framework to latest version |
 
 ---
 
@@ -195,6 +196,7 @@ Examine what follows `/sc`:
 | `update` | `/sc update` | → update (refresh memory) |
 | `mode normal` | `/sc mode normal` | → set mode to Normal |
 | `mode overnight` | `/sc mode overnight` | → set mode to Overnight |
+| `upgrade` | `/sc upgrade` | → upgrade (pull latest framework) |
 
 ### Step 2: Extract Payload for add
 

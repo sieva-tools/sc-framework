@@ -33,6 +33,7 @@ TASK MANAGEMENT
 
 UTILITIES
   /sc:update                   Refresh codebase memory after big changes
+  /sc:upgrade                  Update SC framework to latest version
   /sc:mode <normal|overnight>  Switch session mode mid-session
   /sc:help                     Show this help
 
