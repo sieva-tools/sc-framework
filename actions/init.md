@@ -53,6 +53,75 @@ Use Glob and Read tools to explore the ENTIRE codebase thoroughly. Don't rush th
 
 ---
 
+## Step 2b: Detect External References
+
+**Scan all project files for references to files OUTSIDE the project folder.**
+
+### What to Search For
+
+Use Grep to find external path references:
+
+```
+# PHP includes/requires with absolute paths
+Grep(pattern="(require|require_once|include|include_once)\s*\(?\s*['\"]\/", glob="*.php")
+
+# PHP includes with parent directory traversal
+Grep(pattern="(require|require_once|include|include_once)\s*\(?\s*['\"]\.\.\/", glob="*.php")
+
+# JavaScript/Node imports with absolute or parent paths
+Grep(pattern="(import|require)\s*\(?\s*['\"](\.\.\/)|(\/)", glob="*.{js,ts}")
+
+# HTML/PHP src and href with absolute or parent paths
+Grep(pattern="(src|href)\s*=\s*['\"](\.\.\/)|(\/var\/)|(\/home\/)", glob="*.{php,html,htm}")
+
+# Symlinks in the project
+# Run: find . -type l
+
+# Config files referencing external paths
+Grep(pattern="(path|dir|root|base|include_path)\s*[:=].*\/", glob="*.{json,yml,yaml,ini,conf,env}")
+```
+
+### Resolve and Collect
+
+For each external reference found:
+
+1. **Resolve the full absolute path** (handle `../` relative to the file that contains it)
+2. **Deduplicate** — collect unique external directories (not individual files)
+3. **Filter out system paths** — skip `/usr/`, `/etc/`, `/tmp/`, standard library paths
+4. **Filter out package managers** — skip paths inside `node_modules/`, `vendor/`, `composer/`
+5. **Check if path exists** — only include paths that actually exist on disk
+
+### Collect into External Paths List
+
+```
+external_paths = [
+  { path: "/var/www/html/common/", referenced_by: ["dashboard.php:5", "login.php:3"], type: "include" },
+  { path: "/var/www/html/shared/libs/", referenced_by: ["api.php:12"], type: "require" },
+  { path: "../gps-common/", resolved: "/var/www/html/gps-common/", referenced_by: ["config.php:8"], type: "include" },
+]
+```
+
+### Analyze External Folders
+
+**For each unique external path that exists:**
+
+1. **Count files** in that external folder
+2. **Read key files** — especially the ones directly referenced
+3. **Document what they provide** — functions, classes, configs, shared utilities
+
+**Do NOT ask the user — just scan and document them automatically.**
+
+### Report External References
+
+```
+External references detected:
+  /var/www/html/common/        — [N] files (DB helpers, auth)
+  /var/www/html/shared/libs/   — [N] files (utility functions)
+  ../gps-common/               — [N] files (shared GPS models)
+```
+
+---
+
 ## Step 3: Create CLAUDE.md
 
 Create `CLAUDE.md` in the project root with:
@@ -131,6 +200,22 @@ Show ACTUAL patterns from this codebase:
 - Shared includes
 - Helper utilities
 
+## External Dependencies (files outside this project)
+For each external folder referenced by this codebase:
+
+### [External Path]
+- **Referenced by:** [list of project files that use it]
+- **What it provides:** [functions, classes, configs]
+- **Key files:**
+  - [file.php] — [purpose]
+  - [file.php] — [purpose]
+- **Functions/Classes used by this project:**
+  - [function_name()] — used in [project_file.php:line]
+
+**IMPORTANT:** These files are NOT in this project folder. When modifying code that
+depends on external files, read them first to understand the interface. Do NOT modify
+external files unless explicitly asked — they may be shared with other projects.
+
 ## Gotchas and Issues
 - Deprecated code patterns found
 - Security concerns noticed
@@ -178,6 +263,27 @@ Full table structures if discoverable
 
 ## Dependencies
 External libraries, includes
+
+## External References Map
+Maps project files to external files they depend on.
+
+### External Folder Index
+| External Path | Files | Used By | Provides |
+|---|---|---|---|
+| /var/www/html/common/ | 12 | dashboard.php, login.php | DB helpers, auth |
+| /var/www/html/shared/ | 5 | api.php, config.php | Utility functions |
+
+### External File Detail
+| External File | Functions/Classes | Used In Project By |
+|---|---|---|
+| /var/www/html/common/db.php | db_connect(), db_query() | dashboard.php:5, users.php:3 |
+| /var/www/html/common/auth.php | check_session(), login() | login.php:3, header.php:10 |
+
+### Reverse Map (Project File → External Dependencies)
+| Project File | Depends On (External) |
+|---|---|
+| dashboard.php | /var/www/html/common/db.php, /var/www/html/common/auth.php |
+| login.php | /var/www/html/common/auth.php |
 
 ## Non-UI Components (if applicable)
 - Service classes and methods
