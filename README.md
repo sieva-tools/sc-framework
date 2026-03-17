@@ -11,7 +11,7 @@ capture → plan → implement → test → archive
 ## Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sievateam/sc/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/amruthasolutions/sc-framework/main/install.sh | bash
 ```
 
 Then restart Claude Code.
@@ -22,14 +22,14 @@ Then restart Claude Code.
 
 ### Step 1: Install SC
 
-**Option A — One-liner (after repo is on GitHub):**
+**Option A — One-liner :**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sievateam/sc/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/amruthasolutions/sc-framework/main/install.sh | bash
 ```
 
 **Option B — Manual install:**
 ```bash
-git clone https://github.com/sievateam/sc.git ~/.claude/skills/sc
+git clone https://github.com/amruthasolutions/sc-framework.git ~/.claude/skills/sc
 mkdir -p ~/.claude/commands
 ln -sf ~/.claude/skills/sc/commands ~/.claude/commands/sc
 ```

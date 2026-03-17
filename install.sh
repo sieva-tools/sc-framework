@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-REPO="sievateam/sc"
+REPO="amruthasolutions/sc-framework"
 SKILL_DIR="$HOME/.claude/skills/sc"
 COMMANDS_DIR="$HOME/.claude/commands"
 
